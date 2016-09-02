@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  body
+  {
+    font-family:Century Gothic,Arial,Helvetica,sans-serif;
+    padding-bottom: 0px;
+  }
+  p
+  {
+    margin-top:0px;
+    font-size:1.2em;
+  }
+  form
+  {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+  }
+  #code_hierarchy_legend
+  {
+    height:80px;
+    float:right;padding-top:80px;
+    text-align:center;
+  }
+  path
+  {
+    stroke: #fff;
+  }
+  path.hovered
+  {
+    stroke: #feb24c;
+    stroke-width : 2;
+    stroke-opacity: 1;
+  }
+  path.active
+  {
+    stroke: #fc4e2a;
+    stroke-width : 2;
+    stroke-opacity: 1;
+  }
+</style>
+<body>
+	<div id="body">
+		<div class="container">
+			<div class="row-fluid">
+				<div class="span6">
+					<div id="code_hierarchy">
+					</div>
+				</div>
+				<div class="span4 pull-right">
+					<div style="opacity: 0;" id="code_hierarchy_legend"><h2></h2><p></p></div>
+				</div>
+			</div>
+		</div>
+  </div>
+  
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/d3.v3.min.js"></script>
+  <script>
+    $(document).ready(function() {
+
+      // title,
+      // weight
+      // sum of sub-entries weights
+      // {
+      //   title,
+      //   etc... 
+      // }
+
+      heriarchy = [
+        "Shahzad (146)",
+        146000,
+        146000,
+        {
+          "Support": [
+            "Support (50)",
+            50000,
+            50000,
+            {
+              "Daniel": [
+                "Daniel Chen",
+                50000,
+                50000,
+                {
+                  "Kandra": [
+                    "Kandra (LSD)",
+                    1000,
+                    1000,
+                    {
+                    }
+                  ],
+                  "John": [
+                    "John",
+                    4000,
+                    4000,
+                    {
+                      "SDMs": [
+                        "SDMs (3)",
+                        4000,
+                        4000,
+                        {
+                        }
+                      ],
+                    },
+                  ],
+                  "PEs": [
+                    "PEs (6)",
+                    6000,
+                    6000,
+                    {
+                    }
+                  ],
+                  "Seb": [
+                    "Seb. (UK)",
+                    12000,
+                    12000,
+                    {
+                      "SEs": [
+                        "SEs  (11)",
+                        12000,
+                        12000,
+                        {
+                        }
+                      ]
+                    }
+                  ],
+                  "Hans": [
+                    "Hans (NL)",
+                    7000,
+                    7000,
+                    {
+                      "SEs": [
+                        "SEs  (6)",
+                        7000,
+                        7000,
+                        {
+                        }
+                      ]
+                    }
+                  ],
+                  "Alex": [
+                    "Alex (DACH)",
+                    8000,
+                    8000,
+                    {
+                      "SEs": [
+                        "SEs (7)",
+                        8000,
+                        8000,
+                        {
+                        }
+                      ]
+                    }
+                  ],
+                  "Adam": [ 
+                    "Adam (UK)",
+                    12000,
+                    12000,
+                    {
+                      "SEs": [
+                        "SEs  (5)",
+                        5500,
+                        5500,
+                        {
+                        }
+                      ],
+                      "Interns": [
+                        "Interns (6)",
+                        6500,
+                        6500,
+                        {
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+            }
+          ],
+          "SalesOps": [
+            "S.Ops & Ser. (28)",
+            28000,
+            28000,
+            {
+              "Marko": [
+                "Marko",
+                11000,
+                11000,
+                {
+                  "SEs": [
+                    "SEs/PELs (7)",
+                    7500,
+                    7500,
+                    {
+                    }
+                  ],
+                  "PMs": [
+                    "PMs/EMs (3)",
+                    3500,
+                    3500,
+                    {
+                    }
+                  ]
+                }
+              ],
+              "Nordics": [
+                "Dan (N)",
+                2000,
+                2000,
+                {
+                  "SEs": [
+                    "SEs (1)",
+                    2000,
+                    2000,
+                    {
+                    }
+                  ],
+                }
+              ],
+              "Shailesh": [
+                "Shail. (UK)",
+                7000,
+                7000,
+                {
+                  "SEs/PELs": [
+                    "SEs/PELs (4)",
+                    5000,
+                    5000,
+                    {
+                    }
+                  ],
+                  "PMs": [
+                    "PMs/EMs (2)",
+                    2000,
+                    2000,
+                    {
+                    }
+                  ],
+                }
+              ],
+              "Heiko": [
+                "Heiko (DACH)",
+                7000,
+                7000,
+                {
+                  "SEs/PELs": [
+                    "SEs/PELs (3)",
+                    3500,
+                    3500,
+                    {
+                    }
+                  ],
+                  "PMs": [
+                    "PMs/EMs (3)",
+                    3500,
+                    3500,
+                    {
+                    }
+                  ],
+                }
+              ],
+              "Leszek": [
+                "Leszek (EE)",
+                1000,
+                1000,
+                {
+                }
+              ]
+            }
+          ],
+          "Experts": [
+            "Experts (44)",
+            44000,
+            44000,
+            {
+              "PeterT": [
+                "PeterT",
+                12000,
+                12000,
+                {
+                  "Experts": [
+                    "Cloud CC (11)",
+                    12000,
+                    12000,
+                    {
+                    }
+                  ],
+                }
+              ],
+              "Pierrick": [
+                "Pierrick",
+                8000,
+                8000,
+                {
+                  "DevSEs": [
+                    "Eng. CC (7)",
+                    8000,
+                    8000,
+                    {
+                    }
+                  ]
+                }
+              ],
+              "Marco": [
+                "Marco",
+                7000,
+                7000,
+                {
+                  "SEs": [
+                    "SEs(6)",
+                    7000,
+                    7000,
+                    {
+                    }
+                  ]
+                }
+              ],
+              "Craig": [
+                "Craig",
+                14000,
+                14000,
+                {
+                  "CraigSEs": [
+                    "ICs/SEs (13)",
+                    14000,
+                    14000,
+                    {
+                    }
+                  ]
+                }              
+              ],
+              "PMs": [
+                "PMs/EMs/Program Mgr (3)",
+                3000,
+                3000,
+                {
+                }
+              ],
+            }
+          ],
+          "Middle East": [
+            "M. East (10)",
+            10000,
+            10000,
+            {
+              "Evren": [
+                "Evren",
+                6000,
+                6000,
+                {
+                  "PM": [
+                    "PM/EM (1)",
+                    1500,
+                    1500,
+                    {
+                    }
+                  ],
+                  "SalesOps": [
+                    "S.Ops/Serv. (4)",
+                    4500,
+                    4500,
+                    {
+                    }
+                  ]
+                }
+              ],
+              "Janty": [
+                "Janty",
+                4000,
+                4000,
+                {
+                  "PH": [
+                    "PH (3)",
+                    4000,
+                    4000,
+                    {
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "Africa": [
+            "Africa (14)",
+            14000,
+            14000,
+            {
+              "Deon": [
+                "Deon",
+                5000,
+                5000,
+                {
+                  "Sales Ops": [
+                    "Sales Ops (4)",
+                    5000,
+                    5000,
+                    {
+                    }
+                  ]
+                }
+              ],
+              "Nico": [
+                "Nico",
+                9000,
+                9000,
+                {
+                  "PSO": [
+                    "PSO (7)",
+                    7500,
+                    7500,
+                    {
+                    }
+                  ],
+                  "PM": [
+                    "PM  (1)",
+                    1500,
+                    1500,
+                    {
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ];
+
+      var colors = {
+        "Shahzad (146)": "#FFD700",
+
+
+
+
+        "Support (50)": "#de783b",
+        "Daniel Chen": "#fe985b",
+        "Kandra (LSD)": "#fed89b",
+        "John": "#fed89b",
+        "SDMs (3)": "#fef8cb",
+        "PC SEs (4)": "#fed89b",
+        "PEs (6)": "#fed89b",
+        "Seb. (UK)": "#fed89b",
+        "SEs  (11)": "#fef8cb",
+        "Hans (NL)": "#fed89b",
+        "SEs  (6)": "#fef8cb",
+        "Kendra": "#feb87b",
+        "PEs (3)": "#fed89b",
+        "Alex (DACH)": "#fed89b",
+        "SEs (7)": "#fef8cb",
+        "Adam (UK)": "#fed89b",
+        "SEs  (5)": "#fef8cb",
+        "Interns (6)": "#fef8cb",
+
+
+
+
+
+        "S.Ops & Ser. (28)": "#6ab975",
+        "Marko": "#8ad995",
+        "SEs/PELs (7)": "#aaf9b5",
+        "PMs/EMs (3)": "#aaf9b5",
+        "Dan (N)": "#8ad995",
+        "SEs (1)": "#aaf9b5",
+        "Shail. (UK)": "#8ad995",
+        "SEs/PELs (4)": "#aaf9b5",
+        "PMs/EMs (2)": "#aaf9b5",
+        "Heiko (DACH)": "#8ad995",
+        "SEs/PELs (3)": "#aaf9b5",
+        "PMs/EMs (3)": "#aaf9b5",
+        "PMs (3)": "#8ad995",
+        "Leszek (EE)": "#8ad995",
+
+
+
+
+
+        "Experts (44)": "#4a9915",
+        "PeterT": "#6ab935",
+        "Cloud CC (11)": "#8ad955",
+        "Pierrick": "#6ab935",
+        "Eng. CC (7)": "#8ad955",
+        "Marco": "#6ab935",
+        "SEs(6)": "#8ad955",
+        "Craig": "#6ab935",
+        "ICs/SEs (13)": "#8ad955",
+        "PMs/EMs/Program Mgr (3)": "#6ab935",
+
+
+
+        "M. East (10)": "#a173d1",
+        "Evren": "#c193f1",
+        "Janty": "#c193f1",
+        "PM/EM (1)": "#e1b3f1",
+        "PSO (1)": "#f1d3f1",
+        "PH (3)": "#e1b3f1",
+        "S.Ops/Serv. (4)": "#e1b3f1",
+
+
+
+
+        "Africa (14)": "#7b615c",
+        "Deon": "#9b817c",
+        "Sales Ops (4)": "#bba19c",
+        "Nico": "#bba19c",
+        "PSO (7)": "#dbc1bc",
+        "PM  (1)": "#dbc1bc"
+      };
+
+      init_plots(heriarchy);
+
+      function init_plots(json)
+      {
+          init_code_hierarchy_plot("code_hierarchy", json);
+      };
+
+      function init_code_hierarchy_plot(element_id,data)
+      {
+        var plot = document.getElementById(element_id);
+        while (plot.hasChildNodes())
+        {
+            plot.removeChild(plot.firstChild);
+        }
+
+        var width = plot.offsetWidth;
+        var height = width;
+        var x_margin = 40;
+        var radius = width/7;
+        var y_margin = 40;
+        var name_index = 0;
+        var count_index = 1;
+        var children_index = 3;
+        var max_depth=50;
+        var data_slices = [];
+        var max_level = 10;
+
+        var svg = d3.select("#"+element_id).append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height * .52 + ")");
+
+        function process_data(data,level,start_deg,stop_deg)
+        {
+            var name = data[0];
+            var total = data[1];
+            var children = data[3];
+            var current_deg = start_deg;
+    		    var parent = '';
+
+            if (level > max_level)
+            {
+                return;
+            }
+            if (start_deg == stop_deg)
+            {
+                return;
+            }
+
+
+            data_slices.push([start_deg,stop_deg,name,level,data[1],data[2]]);
+
+            for (var key in children)
+            {
+                child = children[key];
+
+    			var inc_deg = (stop_deg-start_deg)/total*child[count_index];
+                var child_start_deg = current_deg;
+
+    			current_deg+=inc_deg;
+
+    			var child_stop_deg = current_deg;
+                var span_deg = child_stop_deg-child_start_deg;
+
+    			process_data(child,level+1,child_start_deg,child_stop_deg);
+            }
+        }
+
+        process_data(data,0,0,360./180.0*Math.PI);
+
+        var ref = data_slices[0];
+        var next_ref = ref;
+        var last_refs = [];
+
+        var thickness = width/2.0/(max_level+2)*1.8;
+
+        var arc = d3.svg.arc()
+          .startAngle(function(d) { if(d[3]==0){return d[0];}return d[0]+0.01; })
+          .endAngle(function(d) { if(d[3]==0){return d[1];}return d[1]-0.01; })
+          .innerRadius(function(d) { return 1.1*d[3]*thickness; })
+          .outerRadius(function(d) { return (1.1*d[3]+1)*thickness; });
+
+        var slices = svg.selectAll(".form-container")
+          .data(function(d) { return data_slices; })
+          .enter()
+          .append("g")
+          .classed('form-container', true);
+
+        slices.append("path")
+          .attr("d", arc)
+          .attr("id",function(d,i){return d[2]+""+i;})
+          .style("fill", function(d) { return colors[d[2]];})
+          .on("click",animate)
+          .attr("class","form")
+          .append("svg:title")
+          .text(function(d) { return Math.round(d[0]*100)/100 +" , "+ Math.round(d[1]*100)/100; });
+
+        slices.append("text")
+          .classed('label', true)
+          .style("font-size", "11px")
+      	  .attr("x", function(d) { return d[1]; })
+          .attr("text-anchor", "middle")
+      		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")" + "rotate(" + getAngle(d) + ")"; })
+      		.attr("dx", "-5") // margin
+      		.attr("dy", ".35em") // vertical-align
+      		.text(function(d){return d[2]})
+          .attr("pointer-events","none");
+
+        function getAngle(d) {
+          //var thetaDeg = (180 / Math.PI * (arc.startAngle()(d) + arc.endAngle()(d)) / 2 - 90);
+          var thetaDeg = (180 / Math.PI * (arc.startAngle()(d) + arc.endAngle()(d)) / 2 - 90);
+          if (thetaDeg == 90) thetaDeg = 0; // That's ugly but I need this to fix the string in the first circle
+          return (thetaDeg > 90) ? thetaDeg - 180 : thetaDeg;
+        }
+
+        function get_start_angle(d,ref)
+        {
+            if (ref)
+            {
+                var ref_span = ref[1]-ref[0];
+                return (d[0]-ref[0])/ref_span*Math.PI*2.0
+            }
+            else
+            {
+                return d[0];
+            }
+        }
+
+        function get_stop_angle(d,ref)
+        {
+            if (ref)
+            {
+                var ref_span = ref[1]-ref[0];
+                return (d[1]-ref[0])/ref_span*Math.PI*2.0
+            }
+            else
+            {
+                return d[0];
+            }
+        }
+
+        function get_level(d,ref)
+        {
+            if (ref)
+            {
+                return d[3]-ref[3];
+            }
+            else
+            {
+                return d[3];
+            }
+        }
+
+        function change_ref(data_point, reference_point) {
+            return [
+                get_start_angle(data_point, reference_point),
+                get_stop_angle (data_point, reference_point),
+                data_point[2],
+                get_level      (data_point, reference_point)
+            ];
+        }
+
+        function rebaseTween(new_ref)
+        {
+            return function(d)
+            {
+                var level = d3.interpolate(get_level(d,ref),get_level(d,new_ref));
+                var start_deg = d3.interpolate(get_start_angle(d,ref),get_start_angle(d,new_ref));
+                var stop_deg = d3.interpolate(get_stop_angle(d,ref),get_stop_angle(d,new_ref));
+                var opacity = d3.interpolate(100,0);
+                return function(t)
+                {
+                    return arc([start_deg(t),stop_deg(t),d[2],level(t)]);
+                }
+            }
+        }
+
+        var animating = false;
+
+        function animate(d)
+    	  {
+  		    d3.select(this).classed('active',true).classed('hovered',false);
+          if (animating)
+          {
+              return;
+          }
+          animating = true;
+          var revert = false;
+          var new_ref;
+          if (d == ref && last_refs.length > 0)
+          {
+              revert = true;
+              last_ref = last_refs.pop();
+          }
+          if (revert)
+          {
+            d = last_ref;
+            new_ref = ref;
+            svg.selectAll(".form-container")
+            .filter(
+                function (b)
+                {
+                    if (b[0] >= last_ref[0] && b[1] <= last_ref[1]  && b[3] >= last_ref[3])
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            )
+            .transition().duration(1000).style("opacity","1").attr("pointer-events","all");
+          }
+          else
+          {
+            new_ref = d;
+            svg.selectAll(".form-container")
+            .filter(
+                function (b)
+                {
+                  if (b[2] == "Sales Ops") {
+                    console.log(b);
+                    console.log(d);
+                  }
+                  if (b[0] < d[0] || b[1] > d[1] || b[3] < d[3])
+                  {
+                    return true;
+                  }
+                  return false;
+                }
+            )
+            .transition().duration(1000).style("opacity","0").attr("pointer-events","none");
+          }
+          svg.selectAll(".form")
+          .filter(
+            function (b)
+            {
+              if (b[0] >= new_ref[0] && b[1] <= new_ref[1] && b[3] >= new_ref[3])
+              {
+                  return true;
+              }
+              return false;
+            }
+          )
+          .transition().duration(1000).attrTween("d",rebaseTween(d));
+
+          svg.selectAll('.label')
+          .filter(
+              function (b)
+              {
+                  return b[0] >= new_ref[0] && b[1] <= new_ref[1] && b[3] >= new_ref[3];
+              }
+          ).transition().duration(1000)
+           .attr("transform", function(b) {
+               var b_prime = change_ref(b, d);
+               return "translate(" + arc.centroid(b_prime) + ")" +
+                      "rotate("    + getAngle(b_prime) +     ")";
+           })
+
+          setTimeout(function(){
+            animating = false;
+            if (! revert)
+            {
+                last_refs.push(ref);
+                ref = d;
+            }
+            else
+            {
+                ref = d;
+            }
+            },1000);
+        };
+
+      }
+
+    });
+  </script>
+</body>
